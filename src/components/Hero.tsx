@@ -138,6 +138,18 @@ export function Hero() {
               {cutState === 1 ? "Don't Cut AI" : cutState === 2 ? 'Cut AI a little' : 'Cut AI'}
             </span>
           </motion.button>
+
+          <motion.a
+            href="https://neuralcute.cutai.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-8 py-4 border-2 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 rounded-xl font-semibold text-lg transition-all cursor-pointer inline-flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span>🎉</span>
+            Have Fun
+          </motion.a>
         </div>
 
         {manifestoClicked && (

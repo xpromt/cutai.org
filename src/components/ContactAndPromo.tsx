@@ -117,7 +117,7 @@ export function ContactAndPromo() {
               </div>
 
               <h3 className="text-2xl font-bold text-white mb-3 flex items-center gap-2">
-                NeuralCute.gamincube.com
+                NeuralCute.cutai.org
                 <Sparkles size={16} className="text-pink-400 animate-pulse" />
               </h3>
 
@@ -140,7 +140,7 @@ export function ContactAndPromo() {
 
             <div>
               <motion.a
-                href="https://neuralcute.gamincube.com"
+                href="https://neuralcute.cutai.org/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex w-full items-center justify-center gap-2 py-3 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white rounded-xl font-semibold text-sm transition-all duration-300 shadow-lg shadow-pink-500/10 hover:shadow-pink-500/20"
