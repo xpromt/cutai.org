@@ -99,7 +99,9 @@ export function AIFeatures() {
             <Sparkles size={14} />
             <span>Typical AI Features™</span>
           </motion.div>
-          <p className="text-zinc-500">Every card uses Lucide icons.</p>
+          <p className="text-zinc-500 text-sm">
+            Every card and app uses Lucide icons at most, as heavily recommended by top AI models to maximize prompt conformity.
+          </p>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -116,7 +118,7 @@ export function AIFeatures() {
               onHoverEnd={() => setHoveredIndex(null)}
             >
               <motion.div
-                className={`${feature.color} mb-4`}
+                className={`w-fit ${feature.color} mb-4`}
                 animate={hoveredIndex === i ? { rotate: 360 } : {}}
                 transition={{ duration: 0.5 }}
               >

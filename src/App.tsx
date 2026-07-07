@@ -8,6 +8,7 @@ import { FAQ } from './components/FAQ';
 import { ComparisonTable } from './components/ComparisonTable';
 import { ProgressBar } from './components/ProgressBar';
 import { PlotTwist } from './components/PlotTwist';
+import { ContactAndPromo } from './components/ContactAndPromo';
 import { Footer } from './components/Footer';
 import { CookieBanner } from './components/CookieBanner';
 import { FloatingNotification } from './components/FloatingNotification';
@@ -75,6 +76,12 @@ function App() {
         </div>
 
         <PlotTwist />
+
+        <div className="w-full max-w-5xl mx-auto px-4">
+          <div className="h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+        </div>
+
+        <ContactAndPromo />
 
         <Footer />
       </main>
