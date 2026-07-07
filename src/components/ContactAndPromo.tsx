@@ -37,28 +37,28 @@ export function ContactAndPromo() {
     return () => clearInterval(interval);
   }, [status]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
 
-    const topicLabels: Record<string, string> = {
-      seed: 'Offer $50M seed funding',
-      slogan: 'Suggest another buzzword',
-      dave: 'Complain about Dave\'s clicking speed',
-      soliloquy: 'Unsolicited advice / prompt tips',
-    };
-
-    const subject = encodeURIComponent(`[CutAI] ${topicLabels[formData.topic] || formData.topic} — from ${formData.name}`);
-    const body = encodeURIComponent(
-      `From: ${formData.name}\nEmail: ${formData.email}\nTopic: ${topicLabels[formData.topic] || formData.topic}\n\n${formData.message}`
-    );
-
     setLoadingStep(0);
     setStatus('submitting');
-    setTimeout(() => {
-      window.location.href = `mailto:xpromt@gmail.com?subject=${subject}&body=${body}`;
-      setTimeout(() => setStatus('submitted'), 1000);
-    }, 2500);
+
+    try {
+      await fetch('https://formspree.io/f/mojoplpe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          topic: formData.topic,
+          message: formData.message,
+          _subject: `[CutAI] ${formData.topic} — from ${formData.name}`,
+        }),
+      });
+    } catch {}
+
+    setTimeout(() => setStatus('submitted'), 2500);
   };
 
   const handleReset = () => {
