@@ -40,8 +40,25 @@ export function ContactAndPromo() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
+
+    const topicLabels: Record<string, string> = {
+      seed: 'Offer $50M seed funding',
+      slogan: 'Suggest another buzzword',
+      dave: 'Complain about Dave\'s clicking speed',
+      soliloquy: 'Unsolicited advice / prompt tips',
+    };
+
+    const subject = encodeURIComponent(`[CutAI] ${topicLabels[formData.topic] || formData.topic} — from ${formData.name}`);
+    const body = encodeURIComponent(
+      `From: ${formData.name}\nEmail: ${formData.email}\nTopic: ${topicLabels[formData.topic] || formData.topic}\n\n${formData.message}`
+    );
+
     setLoadingStep(0);
     setStatus('submitting');
+    setTimeout(() => {
+      window.location.href = `mailto:xpromt@gmail.com?subject=${subject}&body=${body}`;
+      setTimeout(() => setStatus('submitted'), 1000);
+    }, 2500);
   };
 
   const handleReset = () => {
@@ -253,7 +270,7 @@ export function ContactAndPromo() {
                   <CheckCircle size={48} className="text-green-400 mb-4 animate-bounce" />
                   <h4 className="text-white font-bold text-lg mb-2">Ingestion Success!</h4>
                   <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                    Your suggestion has been successfully parsed, condensed into a single keyword token, and pushed to our Simulated Garbage Collector (<code className="bg-zinc-950 px-1 py-0.5 rounded text-xs text-purple-400">/dev/null</code>). Dave was briefly buzzed on his Apple Watch before disabling alerts.
+                    Your email client should have opened with the proposal pre-filled. If nothing happened, your synergy has been silently judged and archived. Dave was briefly buzzed on his Apple Watch before disabling alerts.
                   </p>
                   <motion.button
                     onClick={handleReset}
