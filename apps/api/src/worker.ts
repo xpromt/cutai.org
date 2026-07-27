@@ -12,8 +12,13 @@ interface JobData {
   url: string;
 }
 
-async function processScan(job: { data: JobData }): Promise<void> {
+async function processScan(job: { data: JobData; id?: string; log?: (msg: string) => void }): Promise<void> {
   const { scanId, siteId, url } = job.data;
+  const log = job.log?.bind(job) ?? (() => {});
+  const startedAt = Date.now();
+
+  console.log(`[scan ${scanId}] start url=${url}`);
+  log(`start url=${url}`);
 
   await markRunning(scanId);
 
@@ -21,11 +26,17 @@ async function processScan(job: { data: JobData }): Promise<void> {
   const fetchResult = await fetcher.extract(url);
 
   if (!fetchResult.ok) {
-    await markFailed(scanId, fetchResult.reason);
+    const reason = fetchResult.reason;
+    const status = 'status' in fetchResult ? ` (HTTP ${fetchResult.status})` : '';
+    console.log(`[scan ${scanId}] fetch failed: ${reason}${status} (${Date.now() - startedAt}ms)`);
+    log(`fetch failed: ${reason}${status}`);
+    await markFailed(scanId, reason);
     // Update site lastScannedAt even for failures
     await prisma.site.update({ where: { id: siteId }, data: { lastScannedAt: new Date() } });
     return;
   }
+
+  console.log(`[scan ${scanId}] fetched ${fetchResult.wordCount} words (${Date.now() - startedAt}ms)`);
 
   const result = scoreText(fetchResult.text);
   await markDone(scanId, result);
@@ -34,6 +45,9 @@ async function processScan(job: { data: JobData }): Promise<void> {
     where: { id: siteId },
     data: { lastScannedAt: new Date() },
   });
+
+  console.log(`[scan ${scanId}] done score=${result.score} tier=${result.tier} (${Date.now() - startedAt}ms)`);
+  log(`done score=${result.score} tier=${result.tier}`);
 }
 
 const isEntry = process.argv[1]?.endsWith('worker.ts') || process.argv[1]?.endsWith('dist/worker.js');

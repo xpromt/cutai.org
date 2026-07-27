@@ -6,6 +6,18 @@ describe('normalizeUrl', () => {
     expect(normalizeUrl('example.com')).toBe('https://example.com/');
   });
 
+  it('accepts bare domain with www prefix', () => {
+    expect(normalizeUrl('www.example.com')).toBe('https://www.example.com/');
+  });
+
+  it('accepts bare domain with path', () => {
+    expect(normalizeUrl('example.com/page')).toBe('https://example.com/page');
+  });
+
+  it('accepts bare domain with query string', () => {
+    expect(normalizeUrl('example.com?a=1')).toBe('https://example.com/?a=1');
+  });
+
   it('lowercases scheme and host', () => {
     expect(normalizeUrl('HTTP://EXAMPLE.COM/Path')).toBe('http://example.com/Path');
   });

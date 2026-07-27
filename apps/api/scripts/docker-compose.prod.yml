@@ -1,6 +1,9 @@
-# Production docker-compose for cutai.org Postgres + Redis
+# Production docker-compose for cutai.org
 # Run on the Contabo VPS:
 #   docker compose -f docker-compose.prod.yml up -d
+#
+# Builds the API image locally. The worker shares the same image
+# but runs a different entrypoint.
 
 services:
   postgres:
@@ -21,6 +24,46 @@ services:
     container_name: cutai-redis
     ports:
       - "6383:6379"
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    container_name: cutai-api
+    command: ["node", "dist/server.js"]
+    ports:
+      - "3002:3002"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/cutai
+      REDIS_URL: redis://redis:6379
+      PORT: "3002"
+      WEB_ORIGIN: https://cutai.org
+    depends_on:
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    container_name: cutai-worker
+    command: ["node", "dist/worker.js"]
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/cutai
+      REDIS_URL: redis://redis:6379
+      FETCH_TIMEOUT_MS: "5000"
+      FETCH_MAX_BYTES: "5242880"
+    depends_on:
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
     restart: unless-stopped
 
 volumes:

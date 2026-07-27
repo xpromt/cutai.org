@@ -76,10 +76,10 @@ export function ScanPage() {
         {mode === 'url' ? (
           <form onSubmit={handleUrlSubmit} className="space-y-4">
             <input
-              type="url"
+              type="text"
               value={url}
               onChange={e => setUrl(e.target.value)}
-              placeholder="https://example.com"
+              placeholder="example.com or https://example.com"
               required
               className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500"
             />

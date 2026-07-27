@@ -89,7 +89,14 @@ export function scanRoutes(app: FastifyInstance) {
       return reply.status(200).send({ slug, url: site.normalizedUrl, status: 'queued' });
     }
 
-    const status = latest.status.toLowerCase();
+    // Stale detection: a scan that's still QUEUED or RUNNING after 5 minutes
+    // likely means the worker is down or the job was lost. Surface it as 'stale'
+    // so the frontend can show a meaningful message instead of polling forever.
+    const STALE_MS = 5 * 60 * 1000;
+    const isStale = (latest.status === 'QUEUED' || latest.status === 'RUNNING')
+      && Date.now() - latest.createdAt.getTime() > STALE_MS;
+
+    const status = isStale ? 'stale' : latest.status.toLowerCase();
     const response: Record<string, unknown> = { slug, url: site.normalizedUrl, status };
 
     if (latest.status === 'DONE') {

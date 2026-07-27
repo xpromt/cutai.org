@@ -7,6 +7,7 @@ export function ScanResultPage() {
   const [data, setData] = useState<ScanResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [polling, setPolling] = useState(true)
+  const [timedOut, setTimedOut] = useState(false)
 
   useEffect(() => {
     if (!slug) return
@@ -22,7 +23,7 @@ export function ScanResultPage() {
           const resp = await getScan(slug!)
           if (cancelled) return
           setData(resp)
-          if (resp.status === 'done' || resp.status === 'failed') {
+          if (resp.status === 'done' || resp.status === 'failed' || resp.status === 'stale') {
             setPolling(false)
             return
           }
@@ -36,6 +37,7 @@ export function ScanResultPage() {
       }
       if (!cancelled && attempts >= maxAttempts) {
         setPolling(false)
+        setTimedOut(true)
       }
     }
 
@@ -82,16 +84,39 @@ export function ScanResultPage() {
           <div className="p-12 text-center space-y-4">
             <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto" />
             <p className="text-zinc-400 text-sm">{polling ? 'Analyzing site & calculating slop score…' : 'Scan not found'}</p>
+            {timedOut && (
+              <p className="text-zinc-500 text-xs">
+                This is taking longer than expected. The scan worker may be busy or down —
+                try refreshing the page in a moment.
+              </p>
+            )}
           </div>
         ) : (
           <>
             <h1 className="text-2xl font-bold mb-1">Slop Score</h1>
             <a href={data.url} target="_blank" rel="noopener noreferrer" className="text-sm text-purple-400 hover:underline mb-6 block truncate">{data.url}</a>
 
-            {polling && data.status !== 'done' && data.status !== 'failed' && (
+            {polling && data.status !== 'done' && data.status !== 'failed' && data.status !== 'stale' && (
               <div className="flex items-center gap-3 bg-zinc-900/80 p-3 rounded-lg border border-yellow-500/30 text-yellow-300 text-sm mb-6">
                 <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse" />
                 <span>Scanning target site… ({data.status})</span>
+              </div>
+            )}
+
+            {data.status === 'stale' && (
+              <div className="p-4 bg-zinc-900 rounded-xl border border-yellow-700/50 mb-6 space-y-2">
+                <p className="text-yellow-300 font-medium">Scan is taking longer than expected</p>
+                <p className="text-sm text-zinc-400">
+                  The scan has been in progress for over 5 minutes. The worker may be down or
+                  the target site is unresponsive. Try refreshing the page in a moment, or
+                  submit the URL again.
+                </p>
+                <Link
+                  to="/scan"
+                  className="inline-block mt-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium transition"
+                >
+                  Back to Scan Page
+                </Link>
               </div>
             )}
 

@@ -12,7 +12,7 @@ export interface ScanResult {
 export interface ScanResponse {
   slug: string
   url?: string
-  status: 'queued' | 'running' | 'done' | 'failed'
+  status: 'queued' | 'running' | 'done' | 'failed' | 'stale'
   scan?: ScanResult & { createdAt: string }
   error?: string
 }
