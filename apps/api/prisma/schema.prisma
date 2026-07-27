@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ScanStatus {
+  QUEUED
+  RUNNING
+  DONE
+  FAILED
+}
+
+model Site {
+  id            String    @id @default(cuid())
+  normalizedUrl String    @unique
+  slug          String    @unique
+  hostname      String
+  autoRescan    Boolean   @default(false)
+  publicListing Boolean   @default(false)
+  lastScannedAt DateTime?
+  createdAt     DateTime  @default(now())
+  scans         Scan[]
+}
+
+model Scan {
+  id          String     @id @default(cuid())
+  siteId      String
+  site        Site       @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  status      ScanStatus @default(QUEUED)
+  score       Int?
+  tier        String?
+  roast       String?
+  breakdown   Json?
+  wordCount   Int?
+  error       String?
+  createdAt   DateTime   @default(now())
+  completedAt DateTime?
+
+  @@index([siteId, createdAt])
+}

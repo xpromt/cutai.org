@@ -1,0 +1,26 @@
+{
+  "name": "cutai.org",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:web": "npm run dev -w @cutai/web",
+    "dev:api": "npm run dev -w @cutai/api",
+    "dev:worker": "npm run worker -w @cutai/api",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "oxlint"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3"
+  }
+}

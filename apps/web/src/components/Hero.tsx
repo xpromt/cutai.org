@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { Sparkles, Scissors, Bot, AlertTriangle } from 'lucide-react';
+import { Sparkles, Scissors, Bot, AlertTriangle, Scan } from 'lucide-react';
 import { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 export function Hero() {
   const [manifestoClicked, setManifestoClicked] = useState(false);
@@ -97,6 +98,14 @@ export function Hero() {
         </motion.p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link
+            to="/scan"
+            className="px-8 py-4 border-2 border-purple-500/50 text-purple-400 hover:bg-purple-500/10 rounded-xl font-semibold text-lg transition-all inline-flex items-center justify-center gap-2"
+          >
+            <Scan size={20} />
+            Detect Slop
+          </Link>
+
           <motion.button
             ref={manifestoRef}
             className="relative px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold text-lg transition-all duration-300 cursor-pointer group overflow-hidden"
