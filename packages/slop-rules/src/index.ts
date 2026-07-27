@@ -15,6 +15,8 @@ export interface RuleHit {
   points: number;
   count: number;
   examples: string[];
+  /** Per-100-words rate for density rules; undefined for count-based rules. */
+  ratePer100?: number;
 }
 
 export interface ScanResult {
@@ -58,13 +60,16 @@ export function scoreText(text: string): ScanResult {
   let totalPoints = 0;
 
   for (const rule of RULES) {
-    const { count, examples } = rule.test(text);
+    const { count, examples, ratePer100 } = rule.test(text);
     if (count < 1) continue;
 
-    const raw = count * rule.weight;
+    // Density rules score from ratePer100; count-based rules from count.
+    const base = rule.density ? (ratePer100 ?? 0) : count;
+    const raw = base * rule.weight;
     const points = Math.min(raw, rule.maxPoints);
+    if (points < 1) continue;
     totalPoints += points;
-    hits.push({ ruleId: rule.id, label: rule.label, points, count, examples });
+    hits.push({ ruleId: rule.id, label: rule.label, points, count, examples, ratePer100 });
   }
 
   // Sort by points descending

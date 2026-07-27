@@ -8,9 +8,15 @@ export interface RuleDef {
 /**
  * A rule that's matched against text.
  * `test` returns the number of occurrences and up to 3 example snippets.
+ *
+ * For density rules (`density: true`), `count` is the raw occurrence count
+ * and `ratePer100` is the per-100-words rate used for scoring. The scorer
+ * uses `ratePer100 * weight` (capped by `maxPoints`) for density rules,
+ * and `count * weight` for count-based rules.
  */
 export interface CompiledRule extends RuleDef {
-  test(text: string): { count: number; examples: string[] };
+  density?: boolean;
+  test(text: string): { count: number; examples: string[]; ratePer100?: number };
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────
@@ -56,6 +62,9 @@ const BUZZWORDS = [
   'reinvent-the-wheel', 'bleeding-edge', 'transformative',
   'scalable', 'holistic', 'actionable', 'impactful',
 ];
+
+// Compiled once at module scope — avoids rebuilding 42 RegExps per call.
+const BUZZWORD_PATTERNS = wordPatterns(BUZZWORDS);
 
 // ─── Phrase patterns ────────────────────────────────────────────────────
 
@@ -121,12 +130,12 @@ export const RULES: CompiledRule[] = [
     label: 'Buzzword density',
     weight: 2,
     maxPoints: 25,
+    density: true,
     test(text) {
       const words = text.split(/\s+/).filter(Boolean).length;
-      const { count, examples } = countMatches(text, wordPatterns(BUZZWORDS));
-      // Score based on buzzwords per 100 words
+      const { count, examples } = countMatches(text, BUZZWORD_PATTERNS);
       const rate = per100(count, words);
-      return { count: Math.round(rate), examples };
+      return { count, examples, ratePer100: rate };
     },
   },
   {
@@ -152,12 +161,13 @@ export const RULES: CompiledRule[] = [
     label: 'Em-dash density',
     weight: 1,
     maxPoints: 10,
+    density: true,
     test(text) {
       const words = text.split(/\s+/).filter(Boolean).length;
       const count = (text.match(/[–—]/g) || []).length;
       const rate = per100(count, words);
       // Only score if rate > 1.5 per 100 words (threshold)
-      return rate > 1.5 ? { count: Math.round(rate), examples: ['em-dash ×' + count] } : { count: 0, examples: [] };
+      return rate > 1.5 ? { count, examples: ['em-dash ×' + count], ratePer100: rate } : { count: 0, examples: [] };
     },
   },
   {
@@ -165,11 +175,12 @@ export const RULES: CompiledRule[] = [
     label: 'Exclamation density',
     weight: 1,
     maxPoints: 8,
+    density: true,
     test(text) {
       const words = text.split(/\s+/).filter(Boolean).length;
       const count = (text.match(/!/g) || []).length;
       const rate = per100(count, words);
-      return rate > 1.5 ? { count: Math.round(rate), examples: ['! ×' + count] } : { count: 0, examples: [] };
+      return rate > 1.5 ? { count, examples: ['! ×' + count], ratePer100: rate } : { count: 0, examples: [] };
     },
   },
   {
@@ -243,8 +254,10 @@ export const RULES: CompiledRule[] = [
     weight: 2,
     maxPoints: 10,
     test(text) {
-      // Pattern: "X, Y, and/or Z" — single word items to avoid backtracking
-      const re = /\b\w+(?:,\s+\w+){1,3},\s+(?:and|or)\s+\w+\b/gi;
+      // Pattern: "X, Y, and/or Z" — single word items to avoid backtracking.
+      // Last comma is optional to also match non-Oxford-comma style
+      // ("apples, bananas and cherries"), which is common in AI output.
+      const re = /\b\w+(?:,\s+\w+){1,3},?\s+(?:and|or)\s+\w+\b/gi;
       let count = 0;
       const examples: string[] = [];
       let m: RegExpExecArray | null;

@@ -68,5 +68,12 @@ export interface BadgeRenderInput {
   size: BadgeSize;
   breakdown?: RuleHitInput[];
   wordCount?: number | null;
+  /**
+   * Optional base64 data URL of a funny portrait picture picked for this
+   * scan (see services/badge/badgePics.ts). When provided, the large badge
+   * embeds it as a framed portrait on the left. Omit / null to render
+   * without a picture. Small badges never render a picture (no room).
+   */
+  picDataUrl?: string | null;
 }
 

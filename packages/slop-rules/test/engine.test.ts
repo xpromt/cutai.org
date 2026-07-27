@@ -108,6 +108,16 @@ describe('scoreText', () => {
     expect(hit!.count).toBeGreaterThanOrEqual(3);
   });
 
+  it('detects triadic enumerations without Oxford comma', () => {
+    // Non-Oxford-comma style: "X, Y and Z" (no comma before "and").
+    // Common in AI output and British English.
+    const noOxford = 'The product is fast, reliable and secure. We deliver value, quality and performance.';
+    const result = score(noOxford);
+    const hit = result.breakdown.find(h => h.ruleId === 'triadic-enumeration');
+    expect(hit).toBeDefined();
+    expect(hit!.count).toBeGreaterThanOrEqual(2);
+  });
+
   it('handles empty string without crashing', () => {
     const result = score('');
     expect(result.score).toBe(0);

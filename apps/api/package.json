@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "worker": "tsx src/worker.ts",
     "test": "vitest --run",
-    "fonts": "node scripts/download-fonts.mjs"
+    "fonts": "node scripts/download-fonts.mjs",
+    "slice-pics": "node scripts/slice-badge-pics.mjs"
   },
   "dependencies": {
     "@cutai/slop-rules": "*",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "@types/node": "^24.13.2",
     "prisma": "^6.19.3",
+    "sharp": "^0.35.3",
     "tsx": "^4.19.4",
     "typescript": "~6.0.2",
     "vitest": "^3.1.1"

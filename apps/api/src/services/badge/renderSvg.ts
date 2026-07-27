@@ -121,7 +121,24 @@ function renderLargeBadge(input: BadgeRenderInput, theme: BadgeTheme, tierColor:
     </g>`;
   }
 
-  const wordCountText = wordCount ? `${wordCount.toLocaleString()} words analyzed` : 'Text & URL analysis engine';
+  const wordCountText = wordCount ? `${wordCount.toLocaleString('en-US')} words analyzed` : 'Text & URL analysis engine';
+
+  // Optional funny portrait (left side). Only rendered for the large badge
+  // and only when the caller supplies a picDataUrl. The picture is a pure
+  // input here — selection happens in the route handler via badgePics.ts.
+  const portraitHtml = input.picDataUrl
+    ? `<!-- Funny Tier Portrait -->
+  <g transform="translate(90, 110)">
+    <defs>
+      <clipPath id="portraitClip">
+        <rect width="240" height="240" rx="20" />
+      </clipPath>
+    </defs>
+    <rect width="240" height="240" rx="20" fill="${escapeXml(theme.cardBg)}" stroke="${escapeXml(tierColor)}" stroke-width="3" filter="url(#lgGlow)" />
+    <image href="${escapeXml(input.picDataUrl)}" x="0" y="0" width="240" height="240" preserveAspectRatio="xMidYMid slice" clip-path="url(#portraitClip)" />
+    <rect width="240" height="240" rx="20" fill="none" stroke="${escapeXml(tierColor)}" stroke-width="3" opacity="0.9" />
+  </g>`
+    : '';
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
@@ -141,6 +158,8 @@ function renderLargeBadge(input: BadgeRenderInput, theme: BadgeTheme, tierColor:
   <!-- Background Canvas -->
   <rect width="1200" height="630" rx="24" fill="url(#lgBgGradient)" stroke="${escapeXml(theme.borderColor)}" stroke-width="2" />
   <rect width="1200" height="630" rx="24" fill="url(#spotlight)" />
+
+  ${portraitHtml}
 
   <!-- Top Brand Header -->
   <g transform="translate(600, 48)">
