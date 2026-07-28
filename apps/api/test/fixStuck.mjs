@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient({ datasourceUrl: 'postgresql://postgres:postgres@localhost:5433/cutai' });
+const prisma = new PrismaClient();
 
 // Find and delete the stuck QUEUED scan that has no BullMQ job
 const stuckScans = await prisma.scan.findMany({ where: { status: 'QUEUED' } });

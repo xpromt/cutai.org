@@ -13,7 +13,7 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: '3002',
-        DATABASE_URL: 'postgresql://postgres:postgres@localhost:5436/cutai',
+        DATABASE_URL: process.env.DATABASE_URL,
         REDIS_URL: 'redis://localhost:6383',
         WEB_ORIGIN: 'https://cutai.org',
         SCORE_RATE_LIMIT_PER_HOUR: '30',
@@ -30,7 +30,7 @@ module.exports = {
       exec_mode: 'fork',
       env: {
         NODE_ENV: 'production',
-        DATABASE_URL: 'postgresql://postgres:postgres@localhost:5436/cutai',
+        DATABASE_URL: process.env.DATABASE_URL,
         REDIS_URL: 'redis://localhost:6383',
         FETCH_TIMEOUT_MS: '5000',
         FETCH_MAX_BYTES: '5242880',

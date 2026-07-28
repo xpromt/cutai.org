@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  DATABASE_URL: z.string().url().default('postgresql://postgres:postgres@localhost:5433/cutai'),
+  DATABASE_URL: z.string().url(),
   REDIS_URL: z.string().url().default('redis://localhost:6382'),
   PORT: z.coerce.number().int().positive().default(3001),
   WEB_ORIGIN: z.string().default('http://localhost:5173'),
