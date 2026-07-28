@@ -4,7 +4,7 @@ import { Star, Bot, Brain, MessageSquare, Quote, BadgeCheck } from 'lucide-react
 const testimonials = [
   {
     quote: '"This fundamentally transformed our paradigm."',
-    author: 'GPT-4',
+    author: 'ChatGPT',
     icon: Bot,
     color: 'text-green-400',
   },

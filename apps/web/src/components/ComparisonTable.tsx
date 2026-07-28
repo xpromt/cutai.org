@@ -104,8 +104,17 @@ export function ComparisonTable() {
                 {row.ai.text === 'makes bugs faster' && (
                   <motion.span
                     className="inline-block"
-                    animate={{ x: [0, 20, 40, 60, 80, 100] }}
-                    transition={{ duration: 2, repeat: Infinity }}
+                    animate={{
+                      x: [0, 100],
+                      opacity: [0, 1, 1, 0],
+                      rotate: [0, -10, 10, -10, 10, 0],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                      times: [0, 0.15, 0.85, 1],
+                    }}
                   >
                     🐛
                   </motion.span>

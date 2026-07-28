@@ -42,63 +42,60 @@ export function CookieBanner() {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed top-0 left-0 right-0 z-50 p-4"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        exit={{ y: -100 }}
+        className="fixed bottom-3 left-3 z-50"
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 100, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       >
-        <div className="max-w-4xl mx-auto p-4 rounded-xl bg-zinc-900/70 backdrop-blur border border-zinc-700 shadow-2xl">
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            <div className="flex items-center gap-3 flex-1">
-              <motion.div
-                className="text-orange-400"
-                animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <Cookie size={24} style={{ clipPath: `inset(0 ${crumbleLevel * 15}% 0 0)` }} />
-              </motion.div>
-              <div className="text-sm text-zinc-400">
-                <p>
-                  We use cookies. <Bot size={14} className="inline text-zinc-500" /> AI also uses cookies.
-                </p>
-                <p className="text-zinc-600">Everything uses cookies.</p>
-              </div>
+        <div className="max-w-xs p-2.5 rounded-lg bg-zinc-900/80 backdrop-blur border border-zinc-700 shadow-2xl">
+          <div className="flex items-center gap-2">
+            <motion.div
+              className="text-orange-400 shrink-0"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+            >
+              <Cookie size={16} style={{ clipPath: `inset(0 ${crumbleLevel * 15}% 0 0)` }} />
+            </motion.div>
+            <div className="text-[12px] leading-tight text-zinc-400 flex-1">
+              <p>
+                We use cookies. <Bot size={10} className="inline text-zinc-500" /> AI too.
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center shrink-0">
               {!accepted ? (
                 <motion.button
-                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-white text-sm font-medium cursor-pointer"
+                  className="px-2 py-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-md text-white text-[11px] font-medium cursor-pointer"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleAccept}
                   disabled={processing}
                 >
                   {processing ? (
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-1">
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                       >
-                        <Sparkles size={14} />
+                        <Sparkles size={10} />
                       </motion.div>
-                      Processing your acceptance...
+                      Accepting...
                     </span>
                   ) : (
-                    <span className="flex items-center gap-2">
-                      <CheckCircle size={14} />
-                      Accept All Intelligence
+                    <span className="flex items-center gap-1">
+                      <CheckCircle size={10} />
+                      Accept
                     </span>
                   )}
                 </motion.button>
               ) : (
                 <motion.div
-                  className="text-sm text-green-400"
+                  className="text-[11px] text-green-400"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
-                  Cookies accepted. We'll remember this. Forever.
+                  Accepted. Forever.
                 </motion.div>
               )}
             </div>

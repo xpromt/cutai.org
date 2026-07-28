@@ -60,10 +60,10 @@ export function FloatingNotification() {
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="fixed bottom-20 right-4 z-40 max-w-xs"
-          initial={{ x: 300, opacity: 0, scale: 0.8 }}
-          animate={{ x: 0, opacity: 1, scale: 1 }}
-          exit={{ x: 300, opacity: 0, scale: 0.8 }}
+          className="fixed bottom-3 right-3 z-40 max-w-xs"
+          initial={{ y: 100, opacity: 0, scale: 0.8 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          exit={{ y: 100, opacity: 0, scale: 0.8 }}
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         >
           <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-700 shadow-2xl">
